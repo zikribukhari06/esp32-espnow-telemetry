@@ -1,55 +1,55 @@
 #include <esp_now.h>
 #include <WiFi.h>
 
-// GANTI dengan MAC Address ESP Udara kamu!
-uint8_t airMAC[] = {0x24, 0x0A, 0xC4, 0x9A, 0x03, 0xB5};
+uint8_t airMAC[] = {0x6C, 0xC8, 0x40, 0x33, 0xC9, 0xA0};
 
 uint8_t sendBuffer[250];
 int bufLen = 0;
+unsigned long lastReadTime = 0; // Tambahan timer untuk nge-pack data
 
-// Callback saat data MAVLink diterima dari ESP Udara
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
-  // Muntahkan data langsung ke port USB Laptop (Mission Planner)
   Serial.write(incomingData, len);
 }
 
 void setup() {
-  // Serial USB ke Laptop (Baudrate wajib sama dengan Pixhawk/Mission Planner)
-  Serial.begin(57600);
+  // PERBESAR buffer USB CDC biar nggak mampet saat MP nge-spam data awal
+  Serial.setRxBufferSize(4096);
+  Serial.setTxBufferSize(4096);
+  Serial.begin(115200);
 
   WiFi.mode(WIFI_STA);
 
-  if (esp_now_init() != ESP_OK) {
-    return;
-  }
+  if (esp_now_init() != ESP_OK) return;
 
   esp_now_register_recv_cb(OnDataRecv);
 
-  // Daftarkan ESP Udara sebagai Peer
   esp_now_peer_info_t peerInfo = {};
   memcpy(peerInfo.peer_addr, airMAC, 6);
   peerInfo.channel = 0;
   peerInfo.encrypt = false;
-
   esp_now_add_peer(&peerInfo);
 }
 
 void loop() {
-  // Ambil data perintah dari Mission Planner (via USB)
-  while (Serial.available()) {
+  while (Serial.available() > 0) {
     sendBuffer[bufLen] = Serial.read();
     bufLen++;
+    lastReadTime = millis(); // Catat waktu terakhir nerima byte data
 
-    // Jika buffer penuh (250 byte), tembak ke ESP Udara
-    if (bufLen >= 250) {
+    // Kalau buffer udah menyentuh batas aman ESP-NOW (240 byte), langsung tembak
+    if (bufLen >= 240) {
       esp_now_send(airMAC, sendBuffer, bufLen);
       bufLen = 0;
     }
   }
 
-  // Siram sisa data kalau aliran dari USB lagi jeda
-  if (bufLen > 0) {
+  // JANGAN ECER DATA: 
+  // Tunggu sampai 5ms sejak byte terakhir diterima, baru tembak sisanya.
+  // Ini mencegah chip Wi-Fi overload karena di-spam instruksi send.
+  if (bufLen > 0 && (millis() - lastReadTime > 5)) {
     esp_now_send(airMAC, sendBuffer, bufLen);
     bufLen = 0;
   }
+  
+  delay(1);
 }
