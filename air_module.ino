@@ -1,6 +1,6 @@
 /*
  * AIR MODULE - Two-way Transparent Serial Bridge (ESP-NOW)
- * Hardware : ESP32 standar (DevKit)
+ * Hardware : ESP32S3
  * Fungsi   : Pixhawk TELEM2 (Serial2) <-> ESP-NOW <-> Ground Module
  *
  * Wiring TELEM2:
