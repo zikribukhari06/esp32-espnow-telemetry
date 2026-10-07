@@ -19,9 +19,9 @@ This project replaces traditional 433MHz/915MHz telemetry modules or standard Wi
 ## 📐 System Architecture
 
 ```text
-+------------------+          UART (57600)          +---------------+
++------------------+          UART (15200)          +---------------+
 |                  |  TX2 (17) ------------> RX2 (16)|               |
-| Pixhawk TELEM1   |                                | ESP32 (Air)   |
+| Pixhawk TELEM2   |                                | ESP32S3 (Air)   |
 | (ArduPilot)      |  RX2 (16) <------------ TX2 (17)|               |
 +------------------+                                +-------+-------+
                                                             |
@@ -29,5 +29,5 @@ This project replaces traditional 433MHz/915MHz telemetry modules or standard Wi
                                                             |
 +------------------+            USB / Serial        +-------+-------+
 | Laptop / PC      | <----------------------------> |               |
-| Mission Planner  |            (57600)             | ESP32 (Ground)|
+| Mission Planner  |            (15200)             | ESP32 (Ground)|
 +------------------+                                +---------------+
