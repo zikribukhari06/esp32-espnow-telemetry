@@ -1,6 +1,6 @@
 /*
  * AIR MODULE - Two-way Transparent Serial Bridge (ESP-NOW)
- * Hardware : ESP32S3
+ * Hardware : ESP32 standar (DevKit)
  * Fungsi   : Pixhawk TELEM2 (Serial2) <-> ESP-NOW <-> Ground Module
  *
  * Wiring TELEM2:
@@ -29,7 +29,8 @@
 // !! WAJIB DIGANTI dengan MAC address board GROUND yang sekarang dipakai
 // !! (ESP32 DevKit Ground). Nilai di bawah adalah MAC lama (ESP32-S3).
 // =====================================================================
-const uint8_t GROUND_MAC[6] = {0x6C,0xC8,0x40,0x33,0xC9,0xA0};
+// const uint8_t GROUND_MAC[6] = {0x6C,0xC8,0x40,0x33,0xC9,0xA0}; // mac addres esp32 jg
+const uint8_t GROUND_MAC[6] = {0x20,0x50,0x0D,0xD0,0x28,0x2C};  // mac adress esp32 ipt
 
 #define ESPNOW_CHANNEL   1
 #define SEND_BUF_SIZE    240     // batas payload per paket
