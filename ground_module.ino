@@ -21,7 +21,7 @@
 #include <esp_wifi.h>
 
 // MAC Air Module (target pengiriman)
-const uint8_t AIR_MAC[6] = {0x7C, 0xE8, 0xB1, 0xB1, 0xE7, 0xB8};
+const uint8_t AIR_MAC[6] = {0x7C, 0xE8, 0xB1, 0xB1, 0xE7, 0xB8}; // mac addres for esp32 s3
 
 #define ESPNOW_CHANNEL   1
 #define SEND_BUF_SIZE    240     // batas payload per paket
